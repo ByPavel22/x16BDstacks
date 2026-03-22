@@ -8,11 +8,17 @@
  */
 
 #ifndef NEXUS_PROCESS_ANALYZER_H
+#ifdef USE_QT_STUBS
+#include "../qt_stubs.h"
+#else
 #define NEXUS_PROCESS_ANALYZER_H
 
 #include <QObject>
+#endif
 #include <QMap>
+#endif
 #include <QString>
+#endif
 #include <memory>
 
 namespace Nexus::Memory {

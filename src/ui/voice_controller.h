@@ -8,10 +8,15 @@
  */
 
 #ifndef NEXUS_VOICE_CONTROLLER_H
+#ifdef USE_QT_STUBS
+#include "../qt_stubs.h"
+#else
 #define NEXUS_VOICE_CONTROLLER_H
 
 #include <QObject>
+#endif
 #include <QString>
+#endif
 #include <memory>
 
 namespace Nexus::UI {

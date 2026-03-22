@@ -1,9 +1,16 @@
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#endif
 /**
  * Nexus AI Emulator - Intelligent Paging Implementation
  */
 
 #include "intelligent_paging.h"
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#else
 #include <QDebug>
+#endif
 #include <QFile>
 #include <QDir>
 #include <QElapsedTimer>

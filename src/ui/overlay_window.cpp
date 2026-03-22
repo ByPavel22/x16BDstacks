@@ -1,3 +1,6 @@
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#endif
 /**
  * Nexus AI Emulator - Overlay Window Implementation
  */

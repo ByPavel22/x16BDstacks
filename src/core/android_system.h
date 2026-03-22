@@ -8,11 +8,21 @@
  */
 
 #ifndef NEXUS_ANDROID_SYSTEM_H
+#ifdef USE_QT_STUBS
+#include "../qt_stubs.h"
+#else
 #define NEXUS_ANDROID_SYSTEM_H
 
 #include <QObject>
+#endif
 #include <QString>
+#endif
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#else
 #include <QProcess>
+#endif
+#endif
 #include <memory>
 
 namespace Nexus::Core {

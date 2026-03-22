@@ -10,9 +10,17 @@
 #ifndef NEXUS_QEMU_WRAPPER_H
 #define NEXUS_QEMU_WRAPPER_H
 
+#ifdef USE_QT_STUBS
+#include "../qt_stubs.h"
+#else
 #include <QObject>
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#else
 #include <QProcess>
+#endif
 #include <QByteArray>
+#endif
 #include <memory>
 
 namespace Nexus::Core {

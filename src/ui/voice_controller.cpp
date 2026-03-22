@@ -1,9 +1,16 @@
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#endif
 /**
  * Nexus AI Emulator - Voice Controller Implementation
  */
 
 #include "voice_controller.h"
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#else
 #include <QDebug>
+#endif
 #include <QTextToSpeech>
 
 namespace Nexus::UI {

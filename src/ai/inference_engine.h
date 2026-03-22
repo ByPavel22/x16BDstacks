@@ -8,10 +8,15 @@
  */
 
 #ifndef NEXUS_INFERENCE_ENGINE_H
+#ifdef USE_QT_STUBS
+#include "../qt_stubs.h"
+#else
 #define NEXUS_INFERENCE_ENGINE_H
 
 #include <QObject>
+#endif
 #include <QString>
+#endif
 #include <memory>
 #include <vector>
 

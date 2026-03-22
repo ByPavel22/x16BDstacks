@@ -9,7 +9,11 @@
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#else
 #include <QDebug>
+#endif
 #include <QDir>
 #include <QFile>
 #include <QStandardPaths>

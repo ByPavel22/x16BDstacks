@@ -18,7 +18,11 @@
 #include <QObject>
 #include <QMainWindow>
 #include <QScopedPointer>
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#else
 #include <QTimer>
+#endif
 #include <QSystemTrayIcon>
 #include <QMenu>
 #endif

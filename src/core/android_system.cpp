@@ -1,9 +1,16 @@
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#endif
 /**
  * Nexus AI Emulator - Android System Implementation
  */
 
 #include "android_system.h"
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#else
 #include <QDebug>
+#endif
 #include <QTimer>
 #include <QFile>
 #include <QDir>

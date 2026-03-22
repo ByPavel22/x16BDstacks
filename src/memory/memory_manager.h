@@ -8,10 +8,19 @@
  */
 
 #ifndef NEXUS_MEMORY_MANAGER_H
+#ifdef USE_QT_STUBS
+#include "../qt_stubs.h"
+#else
 #define NEXUS_MEMORY_MANAGER_H
 
 #include <QObject>
+#endif
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#else
 #include <QTimer>
+#endif
+#endif
 #include <memory>
 
 namespace Nexus::Memory {

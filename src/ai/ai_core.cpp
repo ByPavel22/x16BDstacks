@@ -1,9 +1,16 @@
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#endif
 /**
  * Nexus AI Emulator - AI Core Implementation
  */
 
 #include "ai_core.h"
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#else
 #include <QDebug>
+#endif
 #include <QDir>
 #include <QStandardPaths>
 

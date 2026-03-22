@@ -1,9 +1,16 @@
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#endif
 /**
  * Nexus AI Emulator - JIT Compiler Implementation
  */
 
 #include "jit_compiler.h"
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#else
 #include <QDebug>
+#endif
 #include <QElapsedTimer>
 #include <QThreadPool>
 #include <QtConcurrent>

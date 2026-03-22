@@ -10,7 +10,11 @@
 #include <QKeySequence>
 #include <QHotkey>
 #include <yaml-cpp/yaml.h>
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#else
 #include <QDebug>
+#endif
 
 namespace Nexus {
 

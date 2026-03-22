@@ -8,11 +8,17 @@
  */
 
 #ifndef NEXUS_AOT_COMPILER_H
+#ifdef USE_QT_STUBS
+#include "../qt_stubs.h"
+#else
 #define NEXUS_AOT_COMPILER_H
 
 #include <QObject>
+#endif
 #include <QString>
+#endif
 #include <QVector>
+#endif
 #include <memory>
 
 namespace Nexus::Shader {

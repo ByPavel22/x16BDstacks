@@ -8,11 +8,17 @@
  */
 
 #ifndef NEXUS_FRAME_GENERATOR_H
+#ifdef USE_QT_STUBS
+#include "../qt_stubs.h"
+#else
 #define NEXUS_FRAME_GENERATOR_H
 
 #include <QObject>
+#endif
 #include <QImage>
+#endif
 #include <QQueue>
+#endif
 #include <memory>
 
 #include "cnn_upscaler.h"

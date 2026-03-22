@@ -8,9 +8,13 @@
  */
 
 #ifndef NEXUS_HYPERVISOR_H
+#ifdef USE_QT_STUBS
+#include "../qt_stubs.h"
+#else
 #define NEXUS_HYPERVISOR_H
 
 #include <QObject>
+#endif
 #include <memory>
 
 namespace Nexus::Core {

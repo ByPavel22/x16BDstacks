@@ -15,7 +15,11 @@
 #else
 #include <QObject>
 #include <QImage>
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#else
 #include <QProcess>
+#endif
 #include <memory>
 #endif
 

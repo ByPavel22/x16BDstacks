@@ -7,11 +7,17 @@
  */
 
 #ifndef NEXUS_CNN_UPSCALER_H
+#ifdef USE_QT_STUBS
+#include "../qt_stubs.h"
+#else
 #define NEXUS_CNN_UPSCALER_H
 
 #include <QObject>
+#endif
 #include <QImage>
+#endif
 #include <QVector>
+#endif
 #include <memory>
 
 namespace Nexus::AI {

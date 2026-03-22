@@ -1,9 +1,16 @@
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#endif
 /**
  * Nexus AI Emulator - Gesture Handler Implementation
  */
 
 #include "gesture_handler.h"
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#else
 #include <QDebug>
+#endif
 #include <QMouseEvent>
 #include <QTouchEvent>
 #include <QGestureEvent>

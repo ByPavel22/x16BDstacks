@@ -1,9 +1,16 @@
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#endif
 /**
  * Nexus AI Emulator - Glassmorphism Renderer Implementation
  */
 
 #include "glassmorphism_renderer.h"
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#else
 #include <QDebug>
+#endif
 #include <QPainter>
 #include <QGraphicsBlurEffect>
 #include <QRandomGenerator>

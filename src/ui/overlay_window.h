@@ -11,10 +11,18 @@
 #ifndef NEXUS_OVERLAY_WINDOW_H
 #define NEXUS_OVERLAY_WINDOW_H
 
+#ifdef USE_QT_STUBS
+#include "../qt_stubs.h"
+#else
 #include <QMainWindow>
 #include <QScopedPointer>
 #include <QPropertyAnimation>
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#else
 #include <QTimer>
+#endif
+#endif
 #include <memory>
 
 namespace Nexus::UI {

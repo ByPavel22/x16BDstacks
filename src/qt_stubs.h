@@ -129,16 +129,54 @@ namespace Qt {
 };
 
 // Debug macros
-#define qDebug() std::cerr << "[DEBUG] "
-#define qInfo() std::cerr << "[INFO] "
+#define qDebug() if(false) std::cerr
+#define qInfo() if(false) std::cerr
 #define qWarning() std::cerr << "[WARNING] "
 #define qCritical() std::cerr << "[ERROR] "
 
 // Signal/Slot macros (no-op for stub)
 #define signals public:
-#define slots:
+#define slots
 #define emit
 #define Q_OBJECT
 #define Q_PROPERTY(...)
+
+// Additional stubs
+class QTimer : public QObject {
+public:
+    QTimer(QObject* parent = nullptr) {}
+    void setInterval(int ms) {}
+    void setSingleShot(bool single) {}
+    void start() {}
+    void stop() {}
+};
+
+class QProcess : public QObject {
+public:
+    enum ProcessError { FailedToStart, Crashed, Timedout, UnknownError };
+    enum ExitStatus { NormalExit, CrashExit };
+    QProcess(QObject* parent = nullptr) {}
+    void start(const QString& program, const QStringList& arguments = QStringList()) {}
+    bool waitForFinished(int msecs = 30000) { return true; }
+    void kill() {}
+    QByteArray readAllStandardOutput() { return QByteArray(); }
+    QByteArray readAllStandardError() { return QByteArray(); }
+    qint64 processId() const { return 0; }
+};
+
+class QByteArray {
+public:
+    QByteArray() = default;
+    QByteArray(const char* s) : m_data(s ? s : "") {}
+    bool isEmpty() const { return m_data.empty(); }
+    const char* constData() const { return m_data.c_str(); }
+    int size() const { return static_cast<int>(m_data.size()); }
+    QByteArray trimmed() const { return *this; }
+    bool contains(const QString& s) const { return m_data.find(s.toUtf8()) != std::string::npos; }
+private:
+    std::string m_data;
+};
+
+class QStringList : public std::vector<QString> {};
 
 #endif // QT_STUBS_H

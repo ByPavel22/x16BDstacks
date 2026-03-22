@@ -8,12 +8,19 @@
  */
 
 #ifndef NEXUS_JIT_COMPILER_H
+#ifdef USE_QT_STUBS
+#include "../qt_stubs.h"
+#else
 #define NEXUS_JIT_COMPILER_H
 
 #include <QObject>
+#endif
 #include <QMap>
+#endif
 #include <QQueue>
+#endif
 #include <QFuture>
+#endif
 #include <memory>
 
 namespace Nexus::Shader {

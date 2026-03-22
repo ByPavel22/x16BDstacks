@@ -9,12 +9,19 @@
  */
 
 #ifndef NEXUS_METRICS_DISPLAY_H
+#ifdef USE_QT_STUBS
+#include "../qt_stubs.h"
+#else
 #define NEXUS_METRICS_DISPLAY_H
 
 #include <QObject>
+#endif
 #include <QWidget>
+#endif
 #include <QColor>
+#endif
 #include <QVector>
+#endif
 #include <memory>
 
 namespace Nexus::UI {

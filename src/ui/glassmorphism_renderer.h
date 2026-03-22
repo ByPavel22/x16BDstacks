@@ -8,11 +8,17 @@
  */
 
 #ifndef NEXUS_GLASSMORPHISM_RENDERER_H
+#ifdef USE_QT_STUBS
+#include "../qt_stubs.h"
+#else
 #define NEXUS_GLASSMORPHISM_RENDERER_H
 
 #include <QObject>
+#endif
 #include <QImage>
+#endif
 #include <QRect>
+#endif
 #include <memory>
 
 namespace Nexus::UI {

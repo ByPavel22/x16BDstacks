@@ -8,12 +8,19 @@
  */
 
 #ifndef NEXUS_SHADER_CACHE_H
+#ifdef USE_QT_STUBS
+#include "../qt_stubs.h"
+#else
 #define NEXUS_SHADER_CACHE_H
 
 #include <QObject>
+#endif
 #include <QMap>
+#endif
 #include <QString>
+#endif
 #include <QByteArray>
+#endif
 #include <memory>
 
 namespace Nexus::Shader {

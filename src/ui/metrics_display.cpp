@@ -1,3 +1,6 @@
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#endif
 /**
  * Nexus AI Emulator - Metrics Display Implementation
  */
@@ -6,7 +9,11 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QFontMetrics>
+#ifdef USE_QT_STUBS
+#include "qt_stubs.h"
+#else
 #include <QDebug>
+#endif
 
 namespace Nexus::UI {
 

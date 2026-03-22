@@ -1,57 +1,75 @@
 cmake_minimum_required(VERSION 3.20)
-project(NexusAIEmulator VERSION 0.1.0 LANGUAGES CXX C)
+
+# Project Definition
+project(NexusAIEmulator 
+    VERSION 0.2.0 
+    DESCRIPTION "Android 13 Emulator with AI-Powered Enhancement"
+    HOMEPAGE_URL "https://github.com/ByPavel22/x16BDstacks"
+    LANGUAGES CXX C
+)
 
 # C++ Standard
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Build options
+# Build Type
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+
+# Build Options
 option(ENABLE_AI "Enable AI upscaling modules" ON)
 option(ENABLE_CUDA "Enable CUDA backend for AI" OFF)
 option(ENABLE_DIRECTML "Enable DirectML backend for AI" ON)
 option(ENABLE_VULKAN "Enable Vulkan renderer" ON)
 option(ENABLE_OPENGL "Enable OpenGL renderer" ON)
-option(BUILD_TESTS "Build unit tests" ON)
+option(BUILD_TESTS "Build unit tests" OFF)
 option(USE_QT "Use Qt for UI" OFF)
+option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
 # Platform check
 if(NOT WIN32)
     message(WARNING "This project is designed for Windows. Some features may not work on other platforms.")
 endif()
 
+# Compiler Flags
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -DDEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+
 # =============================================================================
-# Dependencies (Optional for compilation check)
+# Dependencies
 # =============================================================================
 
 set(QT_FOUND FALSE)
 set(VULKAN_FOUND FALSE)
 set(OPENGL_FOUND FALSE)
-set(ONNX_FOUND FALSE)
 
 if(USE_QT)
     find_package(Qt6 COMPONENTS Core Gui Widgets Quick QUIET)
     if(Qt6_FOUND)
         set(QT_FOUND TRUE)
-        message(STATUS "Qt6 found - building with full UI")
+        message(STATUS "✅ Qt6 found - building with full UI")
     else()
-        message(WARNING "Qt6 not found - building without UI")
+        message(WARNING "⚠️ Qt6 not found - building in stub mode")
     endif()
 endif()
 
 find_package(Vulkan QUIET)
 if(Vulkan_FOUND)
     set(VULKAN_FOUND TRUE)
-    message(STATUS "Vulkan found")
+    message(STATUS "✅ Vulkan found")
 else()
-    message(WARNING "Vulkan not found - using fallback")
+    message(WARNING "⚠️ Vulkan not found - using fallback")
 endif()
 
 find_package(OpenGL QUIET)
 if(OpenGL_FOUND)
     set(OPENGL_FOUND TRUE)
-    message(STATUS "OpenGL found")
+    message(STATUS "✅ OpenGL found")
 else()
-    message(WARNING "OpenGL not found - using fallback")
+    message(WARNING "⚠️ OpenGL not found - using fallback")
 endif()
 
 # =============================================================================
@@ -133,7 +151,12 @@ set(MAIN_SOURCES
     src/application.h
 )
 
-# All sources combined
+# Qt stubs
+set(STUB_SOURCES
+    src/qt_stubs.h
+)
+
+# All sources
 set(ALL_SOURCES
     ${MAIN_SOURCES}
     ${CORE_SOURCES}
@@ -142,14 +165,19 @@ set(ALL_SOURCES
     ${MEMORY_SOURCES}
     ${SHADER_SOURCES}
     ${INPUT_SOURCES}
+    ${STUB_SOURCES}
 )
 
 # =============================================================================
 # Executable
 # =============================================================================
 
-add_executable(NexusEmulator
-    ${ALL_SOURCES}
+add_executable(NexusEmulator WIN32 ${ALL_SOURCES})
+
+# Set output name
+set_target_properties(NexusEmulator PROPERTIES
+    OUTPUT_NAME "NexusAIEmulator"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )
 
 # Include directories
@@ -157,27 +185,43 @@ target_include_directories(NexusEmulator PRIVATE
     ${CMAKE_SOURCE_DIR}/src
 )
 
-# Use Qt stubs if Qt not found
-if(NOT QT_FOUND)
-    target_compile_definitions(NexusEmulator PRIVATE USE_QT_STUBS)
-endif()
+# Compile definitions
+target_compile_definitions(NexusEmulator PRIVATE
+    VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
+    VERSION_MINOR=${PROJECT_VERSION_MINOR}
+    VERSION_PATCH=${PROJECT_VERSION_PATCH}
+    VERSION_STRING="${PROJECT_VERSION}"
+    $<$<CONFIG:Debug>:DEBUG_BUILD>
+    $<$<CONFIG:Release>:RELEASE_BUILD>
+)
 
-# Link libraries (conditional)
-if(QT_FOUND)
+# Qt stubs mode
+if(NOT QT_FOUND)
+    target_compile_definitions(NexusEmulator PRIVATE
+        USE_QT_STUBS
+        NOMINMAX
+    )
+    message(STATUS "📦 Building with Qt stubs (stub mode)")
+else()
     target_link_libraries(NexusEmulator PRIVATE
         Qt6::Core
         Qt6::Gui
         Qt6::Widgets
         Qt6::Quick
     )
-    target_compile_definitions(NexusEmulator PRIVATE USE_QT)
+    target_compile_definitions(NexusEmulator PRIVATE
+        USE_QT
+    )
+    message(STATUS "🎨 Building with full Qt (full mode)")
 endif()
 
+# Vulkan
 if(VULKAN_FOUND)
     target_link_libraries(NexusEmulator PRIVATE Vulkan::Vulkan)
     target_compile_definitions(NexusEmulator PRIVATE USE_VULKAN)
 endif()
 
+# OpenGL
 if(OPENGL_FOUND)
     target_link_libraries(NexusEmulator PRIVATE OpenGL::GL)
     target_compile_definitions(NexusEmulator PRIVATE USE_OPENGL)
@@ -190,6 +234,7 @@ if(WIN32)
         dxgi
         dwmapi
         ole32
+        uuid
     )
 endif()
 
@@ -198,33 +243,12 @@ if(UNIX AND NOT APPLE)
     target_link_libraries(NexusEmulator PRIVATE
         pthread
         dl
+        m
     )
 endif()
 
 # =============================================================================
-# Compile Definitions
-# =============================================================================
-
-target_compile_definitions(NexusEmulator PRIVATE
-    $<$<CONFIG:Debug>:DEBUG_BUILD>
-    $<$<CONFIG:Release>:RELEASE_BUILD>
-)
-
-# CUDA support
-if(ENABLE_CUDA)
-    find_package(CUDAToolkit QUIET)
-    if(CUDAToolkit_FOUND)
-        add_compile_definitions(CUDA_ENABLED)
-        target_link_libraries(NexusEmulator PRIVATE
-            CUDA::cudart
-            CUDA::cublas
-        )
-        message(STATUS "CUDA enabled")
-    endif()
-endif()
-
-# =============================================================================
-# Compiler Options
+# Compiler-Specific Options
 # =============================================================================
 
 if(MSVC)
@@ -234,9 +258,15 @@ if(MSVC)
         /permissive-
         /Zc:__cplusplus
         /utf-8
+        /MP # Multi-processor compilation
+    )
+    
+    # Optimizations for Release
+    target_compile_options(NexusEmulator PRIVATE
         $<$<CONFIG:Release>:/O2>
         $<$<CONFIG:Release>:/GL>
     )
+    
     target_link_options(NexusEmulator PRIVATE
         $<$<CONFIG:Release>:/LTCG>
     )
@@ -244,17 +274,17 @@ else()
     target_compile_options(NexusEmulator PRIVATE
         -Wall
         -Wextra
-        -O2
+        -Wpedantic
         -Wno-unused-parameter
-        -Wno-unused-variable
+        -O2
     )
 endif()
 
 # =============================================================================
-# Post-build events
+# Post-Build Events
 # =============================================================================
 
-# Copy config file to build directory
+# Copy config file
 add_custom_command(TARGET NexusEmulator POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     ${CMAKE_SOURCE_DIR}/configs/nexus-config.yaml
@@ -262,7 +292,7 @@ add_custom_command(TARGET NexusEmulator POST_BUILD
     COMMENT "Copying configuration file..."
 )
 
-# Create output directories
+# Create directories
 add_custom_command(TARGET NexusEmulator POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory
     $<TARGET_FILE_DIR:NexusEmulator>/models
@@ -273,24 +303,29 @@ add_custom_command(TARGET NexusEmulator POST_BUILD
 )
 
 # =============================================================================
-# Tests (only if Qt is available)
+# Tests
 # =============================================================================
 
 if(BUILD_TESTS AND QT_FOUND)
     enable_testing()
-
+    
     add_executable(NexusTests
         tests/test_ai_core.cpp
         tests/test_memory_manager.cpp
         tests/test_shader_cache.cpp
         tests/test_input_handler.cpp
     )
-
+    
     target_link_libraries(NexusTests PRIVATE
+        NexusEmulator
         Qt6::Core
         Qt6::Test
     )
-
+    
+    set_target_properties(NexusTests PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/tests"
+    )
+    
     add_test(NAME NexusTests COMMAND NexusTests)
 endif()
 
@@ -306,17 +341,51 @@ install(DIRECTORY configs/
     DESTINATION bin/configs
 )
 
+install(FILES
+    README.md
+    LICENSE
+    DESTINATION bin
+)
+
+# =============================================================================
+# CPack Configuration
+# =============================================================================
+
+set(CPACK_PACKAGE_NAME "Nexus AI Emulator")
+set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
+set(CPACK_PACKAGE_VENDOR "Nexus Team")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Android 13 Emulator with AI-powered upscaling")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "NexusEmulator")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md")
+
+if(WIN32)
+    set(CPACK_GENERATOR "ZIP;NSIS")
+    set(CPACK_WIN32_EXE_TYPE "GUI")
+else()
+    set(CPACK_GENERATOR "TGZ")
+endif()
+
+include(CPack)
+
 # =============================================================================
 # Summary
 # =============================================================================
 
 message(STATUS "")
-message(STATUS "=== Nexus AI Emulator Configuration ===")
-message(STATUS "Version: ${PROJECT_VERSION}")
-message(STATUS "Qt6: ${QT_FOUND}")
-message(STATUS "Vulkan: ${VULKAN_FOUND}")
-message(STATUS "OpenGL: ${OPENGL_FOUND}")
-message(STATUS "CUDA: ${ENABLE_CUDA}")
-message(STATUS "Build Tests: ${BUILD_TESTS}")
-message(STATUS "======================================")
+message(STATUS "╔═══════════════════════════════════════════════════════════╗")
+message(STATUS "║        Nexus AI Emulator - Build Configuration            ║")
+message(STATUS "╠═══════════════════════════════════════════════════════════╣")
+message(STATUS "║ Version:       ${PROJECT_VERSION}                              ║")
+message(STATUS "║ Build Type:    ${CMAKE_BUILD_TYPE}                              ║")
+message(STATUS "║ System:        ${CMAKE_SYSTEM_NAME} ${CMAKE_SYSTEM_PROCESSOR}                     ║")
+message(STATUS "║ Compiler:      ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}                         ║")
+message(STATUS "╠═══════════════════════════════════════════════════════════╣")
+message(STATUS "║ Qt6:           ${QT_FOUND} ${IF_QT_FOUND}                          ║")
+message(STATUS "║ Vulkan:        ${VULKAN_FOUND} ${IF_VULKAN_FOUND}                         ║")
+message(STATUS "║ OpenGL:        ${OPENGL_FOUND} ${IF_OPENGL_FOUND}                         ║")
+message(STATUS "║ CUDA:          ${ENABLE_CUDA}                                  ║")
+message(STATUS "║ DirectML:      ${ENABLE_DIRECTML}                                  ║")
+message(STATUS "║ Build Tests:   ${BUILD_TESTS}                                  ║")
+message(STATUS "╚═══════════════════════════════════════════════════════════╝")
 message(STATUS "")

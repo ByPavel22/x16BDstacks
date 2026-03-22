@@ -1,0 +1,107 @@
+# Nexus AI Emulator - Git Ignore
+
+# Build outputs
+out/
+build/
+bin/
+lib/
+obj/
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+*.pdb
+*.ilk
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# Qt
+*.moc
+*.qrc
+*.ui
+*.user
+*.pro.user
+*.creator
+*.creator.user
+
+# IDE
+.vs/
+.vscode/
+*.sln
+*.suo
+*.vcxproj*
+*.ninja
+*.cmake
+
+# Dependencies
+deps/
+third_party/
+
+# Data and cache
+data/
+cache/
+models/*.onnx
+models/*.pb
+*.img
+*.swap
+
+# Logs
+logs/
+*.log
+
+# Test outputs
+TestResults/
+Testing/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Package files
+*.zip
+*.tar.gz
+*.7z
+*.msi
+*.dmg
+
+# Documentation build
+docs/_build/
+docs/build/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+
+# AI models (large files)
+models/frame_gen_cnn_v1.onnx
+models/texture_restoration_cnn_v1.onnx
+models/process_analyzer.onnx
+models/shader_predictor.onnx
+
+# QEMU
+qemu/
+*.qcow2
+*.raw
+
+# Android SDK
+android-sdk/
+.adb/
